@@ -119,7 +119,6 @@ impl<'a> DownloadCfg<'a> {
         Ok(utils::read_file("hash", &hash_file).map(|s| s[0..64].to_owned())?)
     }
 
-    #[cfg(feature = "signature-check")]
     fn download_signature(&self, url: &str) -> Result<String> {
         let sig_url = utils::parse_url(&(url.to_owned() + ".asc"))?;
         let sig_file = self.temp_cfg.new_file()?;
@@ -131,7 +130,6 @@ impl<'a> DownloadCfg<'a> {
         Ok(utils::read_file("signature", &sig_file).map(|s| s.to_owned())?)
     }
 
-    #[cfg(feature = "signature-check")]
     fn check_signature(&self, url: &str, file: &temp::File<'_>) -> Result<()> {
         let signature = self.download_signature(url).map_err(|e| {
             e.chain_err(|| ErrorKind::SignatureVerificationFailed {
@@ -198,12 +196,9 @@ impl<'a> DownloadCfg<'a> {
             (self.notify_handler)(Notification::ChecksumValid(url_str));
         }
 
-        #[cfg(feature = "signature-check")]
-        {
-            // No signatures for tarballs for now.
-            if !url_str.ends_with(".tar.gz") && !url_str.ends_with(".tar.xz") {
-                self.check_signature(&url_str, &file)?;
-            }
+        // No signatures for tarballs for now.
+        if !url_str.ends_with(".tar.gz") && !url_str.ends_with(".tar.xz") {
+            self.check_signature(&url_str, &file)?;
         }
 
         Ok(Some((file, partial_hash)))

@@ -13,6 +13,4 @@ pub mod manifest;
 pub mod manifestation;
 pub mod notifications;
 pub mod prefix;
-
-#[cfg(feature = "signature-check")]
 pub mod signatures;

@@ -1,9 +1,6 @@
 //! Signature verification support for Rustup.
-//!
-//! Only compiled if the signature-check feature is enabled
 
 // TODO: Determine whether we want external keyring support
-// TODO: Determine how to integrate nicely into the test suite
 
 use pgp::types::KeyTrait;
 use pgp::{Deserializable, SignedPublicKey, StandaloneSignature};
